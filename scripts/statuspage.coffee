@@ -12,7 +12,7 @@
 #   hubot status incidents - Show all unresolved incidents
 #   hubot status open (investigating|identified|monitoring|resolved) <name>: <message> - Create a new incident using the specified name and message, setting it to the desired status (investigating, etc.). The message can be omitted
 #   hubot status update <status> <message> - Update the latest open incident with the specified status and message.
-# 
+#
 # Author:
 #   roidrage
 module.exports = (robot) ->
@@ -54,7 +54,7 @@ module.exports = (robot) ->
           incident =
             status: msg.match[1]
             message: msg.match[2]
-            wants_twitter_update: 't'
+            wants_twitter_update: !!process.env.HUBOT_STATUS_TWITTER_UPDATE || 'f'
           params =
             incident: incident
           msg.http("#{baseUrl}/incidents/#{incidentId}.json").headers(authHeader).patch(JSON.stringify params) (err, res, body) ->
@@ -73,7 +73,7 @@ module.exports = (robot) ->
 
     incident =
       status: msg.match[1]
-      wants_twitter_update: "t"
+      wants_twitter_update: !!process.env.HUBOT_STATUS_TWITTER_UPDATE || 'f'
       message: message
       name: name
     params = {incident: incident}
@@ -85,7 +85,7 @@ module.exports = (robot) ->
           msg.send "Error updating incident \"#{name}\": #{response.error}"
         else
           msg.send "Created incident \"#{name}\""
-    
+
   robot.respond /status\?$/i, (msg) ->
     msg.http("#{baseUrl}/components.json")
      .headers(authHeader)
@@ -111,7 +111,7 @@ module.exports = (robot) ->
          msg.send "Sorry, the component \"#{msg.match[1]}\" doesn't exist. I know of these components: #{(component.name for component in response).join(",  ")}."
        else
          msg.send "Status of #{msg.match[1]}: #{components[0].status.replace(/_/g, " ")}"
-       
+
   robot.respond /status ((\S ?)+) (major( outage)?|degraded( performance)?|partial( outage)?|operational)/i, (msg) ->
     componentName = msg.match[1]
     status = msg.match[3]
