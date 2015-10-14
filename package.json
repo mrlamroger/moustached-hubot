@@ -5,7 +5,7 @@
   "repository": [
     {
       "type": "git",
-      "url": "https://github.com/travis-ci/moustached-hubot.git"
+      "url": "https://github.com/OpenGov/moustached-hubot.git"
     }
   ],
   "main": "./index",
